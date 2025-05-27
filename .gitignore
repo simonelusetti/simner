@@ -4,3 +4,5 @@ models/
 reports/
 playground.ipynb
 .venv/
+outputs/
+__results__
