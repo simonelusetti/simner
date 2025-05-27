@@ -1,7 +1,7 @@
 config:
   model_name: bert-base-cased
   output_name: simner_base
-  split: train[:100%]
+  split: train[:100]
   epochs: 3
   batch_size: 8
   lr: 3.0e-05

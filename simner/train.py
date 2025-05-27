@@ -6,10 +6,11 @@ from .eval import evaluate
 import torch
 import os
 
-@hydra_main(config_name="model", config_path="../config", version_base="1.1")
-def main(cfg: TrainConfig):
 
-    device = cfg.device
+
+@hydra_main(config_name="config", config_path="../conf", version_base="1.1")
+def main(cfg: TrainConfig):
+    device = cfg.config.device
     
     if device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -18,13 +19,13 @@ def main(cfg: TrainConfig):
         assert torch.cuda.is_available(), "CUDA requested but not available!"
 
     model = train(
-        model_name=cfg.model_name,
-        epochs=cfg.epochs,
-        batch_size=cfg.batch_size,
-        lr=cfg.lr,
+        model_name=cfg.config.model_name,
+        epochs=cfg.config.epochs,
+        batch_size=cfg.config.batch_size,
+        lr=cfg.config.lr,
         device=device,
-        split=cfg.split,
-        attention=cfg.attention,
+        split=cfg.config.split,
+        attention=cfg.config.attention,
     )
 
     os.makedirs("models", exist_ok=True)
