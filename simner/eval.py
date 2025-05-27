@@ -1,13 +1,13 @@
 import torch
 from transformers import AutoTokenizer
 from datasets import load_dataset
-from models import SimNER
-from classifier import KNNTokenClassifier
+from .models import SimNER
+from .classifier import KNNTokenClassifier
 from seqeval.metrics import classification_report, precision_score, recall_score, f1_score
 from tqdm import tqdm
 from datetime import datetime
 import os
-import argparse
+from dora import get_xp
 
 def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", index_size=1000, config_args = None):
     # === Load tokenizer and model ===
@@ -68,17 +68,12 @@ def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", 
     print(f"\n✅ Report saved to: {filename}")
 
 if __name__ == "__main__":
+    xp = get_xp()
+    cfg = xp.config
 
-    parser = argparse.ArgumentParser(description="Process a string and a number.")
-    parser.add_argument("--model_name", type=str, help="the model to load")
-    parser.add_argument("--index_size", type=int, nargs="?", default=1000, help="size of the index for evaluation")
+    model = SimNER(model_name=cfg.model_name, projection_dim=256)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.load_state_dict(torch.load(f"./models/{cfg.model_name}.pt", map_location=device))
 
-    args = parser.parse_args()
-
-    index_size = args.index_size
-    model_name = args.model_name
-
-    model = SimNER(model_name="bert-base-cased", projection_dim=256)
-    device="cuda" if torch.cuda.is_available() else "cpu"
-    model.load_state_dict(torch.load(f"./models/{model_name}.pt", map_location=device))
-    evaluate(model,index_size=index_size, config_args = args)
+    evaluate(model, index_size=cfg.index_size, config_args=cfg)
+    xp.done()

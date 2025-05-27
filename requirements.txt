@@ -3,3 +3,6 @@ datasets
 transformers
 seqeval
 tqdm
+dora-search
+fire
+hydra-core

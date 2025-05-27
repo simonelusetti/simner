@@ -1,0 +1,10 @@
+name: simner
+project: simner_project
+folder: __results__
+main_module: simner.train
+config: config/model.yaml
+device: "cpu"
+
+hydra:
+  run:
+    dir: .

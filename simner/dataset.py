@@ -1,5 +1,9 @@
 from torch.utils.data import Dataset
 from datasets import load_dataset, load_from_disk
+from pathlib import Path
+
+project_root = Path(__file__).resolve().parent.parent
+perturbated_path = project_root / "perturbated"
 
 class PerturbatedDataset(Dataset):
     def __init__(self, split="train"):
@@ -19,7 +23,7 @@ class PerturbatedDataset(Dataset):
         single_sentences = [line for string in sentence_dataset["highlights"] for line in string.split("\n") if line.strip()]
 
         # Step 3: Load perturbated data from disk and slice accordingly
-        full_perturbated = load_from_disk("perturbated")[base_split]
+        full_perturbated = load_from_disk(perturbated_path)[base_split]
         if slice_expr:
             # Handle slice expression like ":10%"
             if slice_expr.startswith(":") and slice_expr.endswith("%"):

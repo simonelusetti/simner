@@ -1,0 +1,9 @@
+model_name: bert-base-cased
+epochs: 3
+batch_size: 8
+lr: 3.0e-05
+device: auto
+split: train[:15%]
+attention: true
+output_name: simner_model
+index_size: 1000

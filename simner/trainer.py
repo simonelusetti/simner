@@ -2,9 +2,9 @@ from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import torch
-from loss import nt_xent_loss  # You’ll define this
-from dataset import PerturbatedDataset
-from models import SimNER, SimNERA
+from .loss import nt_xent_loss
+from .dataset import PerturbatedDataset
+from .models import SimNER, SimNERA
 import os
 
 def train(
@@ -14,7 +14,7 @@ def train(
         lr=3e-5, 
         device="cuda" if torch.cuda.is_available() else "cpu",
         split="train[:10%]",
-        attention = False,
+        attention = True,
     ):
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -22,6 +22,7 @@ def train(
     else: model = SimNER(model_name=model_name)
 
     dataset = PerturbatedDataset(split=split)
+    print(device)
     model.to(device)
     model.train()
 
