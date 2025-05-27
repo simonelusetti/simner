@@ -1,4 +1,5 @@
 # simner/train.py
+import logging
 from dora import hydra_main
 from .config import TrainConfig
 from .trainer import train
@@ -6,7 +7,7 @@ from .eval import evaluate
 import torch
 import os
 
-
+logger = logging.getLogger(__name__)
 
 @hydra_main(config_name="config", config_path="../conf", version_base="1.1")
 def main(cfg: TrainConfig):
@@ -28,8 +29,4 @@ def main(cfg: TrainConfig):
         attention=cfg.config.attention,
     )
 
-    os.makedirs("models", exist_ok=True)
-    output_path = f"models/{cfg.output_name}.pt"
-    torch.save(model.state_dict(), output_path)
-
-    evaluate(model, index_size=cfg.index_size, config_args=cfg)
+    evaluate(model, index_size=cfg.config.index_size, config_args=cfg)

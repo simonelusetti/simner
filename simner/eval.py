@@ -1,4 +1,5 @@
 import torch
+import logging
 from transformers import AutoTokenizer
 from datasets import load_dataset
 from .models import SimNER
@@ -8,6 +9,8 @@ from tqdm import tqdm
 from datetime import datetime
 import os
 from dora import get_xp
+
+logger = logging.getLogger(__name__)
 
 def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", index_size=1000, config_args = None):
     # === Load tokenizer and model ===
@@ -54,9 +57,7 @@ def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", 
 
     report = "\n".join(report_text)
 
-    # === Print to console ===
-    print("\n" + report)
-
+    """
     # === Save to file ===
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     os.makedirs("reports", exist_ok=True)
@@ -65,7 +66,7 @@ def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", 
     with open(filename, "w") as f:
         f.write(report)
 
-    print(f"\n✅ Report saved to: {filename}")
+    print(f"\n✅ Report saved to: {filename}")"""
 
 if __name__ == "__main__":
     xp = get_xp()

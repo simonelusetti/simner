@@ -1,0 +1,4 @@
+defaults:
+  - base
+
+split: train[:10000]

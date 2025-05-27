@@ -6,6 +6,7 @@ from .loss import nt_xent_loss
 from .dataset import PerturbatedDataset
 from .models import SimNER, SimNERA
 import os
+import logging
 
 def train(
         model_name = "bert-base-cased", 
@@ -13,7 +14,7 @@ def train(
         batch_size=8, 
         lr=3e-5, 
         device="cuda" if torch.cuda.is_available() else "cpu",
-        split="train[:10%]",
+        split="train[:100%]",
         attention = True,
     ):
 
@@ -22,7 +23,6 @@ def train(
     else: model = SimNER(model_name=model_name)
 
     dataset = PerturbatedDataset(split=split)
-    print(device)
     model.to(device)
     model.train()
 
@@ -57,6 +57,6 @@ def train(
             total_loss += loss.item()
 
         avg_loss = total_loss / len(dataloader)
-        print(f"Epoch {epoch+1} | Avg Token-wise Loss: {avg_loss:.4f}")
+        logging.info(f"Epoch {epoch+1} | Avg Token-wise Loss: {avg_loss:.4f}")
 
     return model
