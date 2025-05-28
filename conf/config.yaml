@@ -1,2 +1,5 @@
 defaults:
   - config: base    # default
+  - override hydra/launcher: launcher
+
+test: 1

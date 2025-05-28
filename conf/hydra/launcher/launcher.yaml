@@ -1,0 +1,4 @@
+_target_: submitit.AutoExecutor
+folder: outputs/submitit_logs
+timeout_min: 60
+cpus_per_task: 2

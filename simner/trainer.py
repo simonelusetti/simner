@@ -4,23 +4,25 @@ from tqdm import tqdm
 import torch
 from .loss import nt_xent_loss
 from .dataset import PerturbatedDataset
-from .models import SimNER, SimNERA
+from .models import SimNER, SimNERA, SimNERT
 import os
 import logging
 
 def train(
         model_name = "bert-base-cased", 
+        model_type = "base",
         epochs=3, 
         batch_size=8, 
         lr=3e-5, 
         device="cuda" if torch.cuda.is_available() else "cpu",
-        split="train[:100%]",
-        attention = True,
+        split="train[:100%]"
     ):
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    if attention: model = SimNERA(model_name=model_name)  
-    else: model = SimNER(model_name=model_name)
+    if model_type=="attention": model = SimNERA(model_name=model_name)  
+    elif model_type=="transformer": model = SimNERT(model_name=model_name)  
+    elif model_type=="base": model = SimNER(model_name=model_name)
+    else: raise RuntimeError(f"❓ Unknown model type: {model_type}")
 
     dataset = PerturbatedDataset(split=split)
     model.to(device)
@@ -31,7 +33,7 @@ def train(
 
     for epoch in range(epochs):
         total_loss = 0
-        for batch in tqdm(dataloader, desc=f"Epoch {epoch+1}"):
+        for batch in tqdm(dataloader, desc=f"Epoch {epoch+1}/{epochs}"):
             originals, perturbed = batch
 
             enc_original = tokenizer(originals, return_tensors="pt", padding=True, truncation=True)

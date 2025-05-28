@@ -12,12 +12,23 @@ from dora import get_xp
 
 logger = logging.getLogger(__name__)
 
-def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", index_size=1000, config_args = None):
+def evaluate(
+        model,
+        dataset = "conll2003",
+        k=3, 
+        device="cuda" if torch.cuda.is_available() else "cpu", 
+        index_size=1000, 
+        config_args = None):
     # === Load tokenizer and model ===
     tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
 
-    # === Load WikiANN English ===
-    dataset = load_dataset("conll2003")
+    # === Load dataset ===
+    if dataset == "conll2003":
+        dataset = load_dataset("conll2003")
+    if dataset == "wikiann":
+        dataset = load_dataset("wikiann","en")
+    if dataset == "wnut_17":
+        dataset = load_dataset("wnut_17")
 
     shuffled_train = dataset["train"].shuffle()
     shuffled_test = dataset["test"].shuffle()
@@ -48,8 +59,10 @@ def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", 
 
     # === Generate report content ===
     report_text = []
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    report_text.append(f"Run: {timestamp}")
     report_text.append(f"Config arguments: {vars(config_args)}\n")
-    report_text.append("Evaluation on WikiANN (binary: ENT vs O)\n")
+    report_text.append(f"Evaluation on {dataset} (binary: ENT vs O)\n")
     report_text.append(classification_report(y_true, y_pred))
     report_text.append(f"\nPrecision: {precision_score(y_true, y_pred):.4f}")
     report_text.append(f"Recall:    {recall_score(y_true, y_pred):.4f}")
@@ -57,24 +70,4 @@ def evaluate(model, k=3, device="cuda" if torch.cuda.is_available() else "cpu", 
 
     report = "\n".join(report_text)
 
-    """
-    # === Save to file ===
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    os.makedirs("reports", exist_ok=True)
-    filename = f"reports/eval_report_{timestamp}.txt"
-
-    with open(filename, "w") as f:
-        f.write(report)
-
-    print(f"\n✅ Report saved to: {filename}")"""
-
-if __name__ == "__main__":
-    xp = get_xp()
-    cfg = xp.config
-
-    model = SimNER(model_name=cfg.model_name, projection_dim=256)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model.load_state_dict(torch.load(f"./models/{cfg.model_name}.pt", map_location=device))
-
-    evaluate(model, index_size=cfg.index_size, config_args=cfg)
-    xp.done()
+    return report
