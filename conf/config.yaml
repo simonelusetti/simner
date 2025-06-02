@@ -1,5 +1,23 @@
-defaults:
-  - config: base    # default
-  - override hydra/launcher: launcher
+model:
+  model_name: bert-base-cased
+  model_type: base
 
-test: 1
+dataset:
+  split: train[:100%]
+
+train:
+  epochs: 3
+  batch_size: 8
+  lr: 3e-5
+  device: auto
+
+evaluate:
+  index_size: 1000
+  dataset_name: conll2003
+  
+meta:
+  retrain: false
+  evaluate: false
+
+dora:
+    exclude: ["num_workers", "logs.*", "evaluate.*", "meta.*"]

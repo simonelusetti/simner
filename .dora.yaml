@@ -5,5 +5,5 @@ main_module: simner.train
 device: "cpu"
 
 hydra:
-  run:
-    dir: .
+  job:
+    chdir: False

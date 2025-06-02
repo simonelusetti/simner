@@ -1,0 +1,9 @@
+defaults:
+  - model: ../config
+  - dataset: ../config
+  - train: ../config
+  - evaluate: ../config
+  - meta: ../config
+
+meta:
+  evaluate: true

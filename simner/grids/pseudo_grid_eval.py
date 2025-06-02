@@ -7,10 +7,10 @@ clear_flag = "--clear" in sys.argv
 
 # Define the parameter grid
 grid = {
-    "dataset.split": ["'train[:10000]'","'train[:1000]'"],
-    "model.model_type": ["base","attention","transformer"],
-    "train.epochs": [3,10,30],
-    "evaluate.index_size": [1000]
+    "config": ["training_set/medium","training_set/small"],
+    "config.model_type": "base",
+    "config.epochs": [3,10,30],
+    "config.index_size": 1000
 }
 
 # Generate all combinations of parameters

@@ -3,7 +3,7 @@ from datasets import load_dataset, load_from_disk
 from pathlib import Path
 
 project_root = Path(__file__).resolve().parent.parent
-perturbated_path = project_root / "perturbated"
+perturbated_path = "/home/simonelusetti/SimNER/perturbated"
 
 class PerturbatedDataset(Dataset):
     def __init__(self, split="train"):
